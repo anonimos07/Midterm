@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #5cb85c;
+            --background-color: #f4f7f6;
+            --text-color: #333;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #3a7bd5;
+        }
+
+        .add-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background-color: #4cae4c;
+        }
+
+        .contacts-table {
+            width: 100%;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .contacts-table-header {
+            display: flex;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 15px;
+        }
+
+        .contacts-table-header > div {
+            flex: 1;
+            text-align: left;
+        }
+
+        .contacts-table-row {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+
+        .contacts-table-row:hover {
+            background-color: #f9f9f9;
+        }
+
+        .contacts-table-row > div {
+            flex: 1;
+        }
+
+        .contacts-table-row ul {
+            list-style-type: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .update-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .update-btn:hover {
+            background-color: #3a7bd5;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 500px;
+            max-width: 90%;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h1 {
+            color: var(--primary-color);
+        }
+
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: black;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .submit-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Contacts</h1>
+        <div>
+            <button class="add-btn" onclick="openModal('addContactModal')">Add New Contact</button>
+            <form th:action="@{/logout}" method="post" style="display: inline-block; margin-left: 10px;">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="contacts-table">
+        <div class="contacts-table-header">
+            <div>Name</div>
+            <div>Email</div>
+            <div>Phone Number</div>
+            <div>Actions</div>
+        </div>
+        <div th:each="contact : ${contacts}" class="contacts-table-row">
+            <div><p th:text="${contact['name']}"></p></div>
+            <div>
+                <ul>
+                    <li th:each="email : ${contact['email']}" th:text="${email}"></li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li th:each="phone : ${contact['phone']}" th:text="${phone}"></li>
+                </ul>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn update-btn" th:attr="onclick=|updateModal('${contact['resourceName']}', '${contact['name']}', '${contact['email']}', '${contact['phone']}')|">Update</button>
+                <form th:action="@{/delete-contact}" method="post">
+                    <input type="hidden" name="resourceName" th:value="${contact['resourceName']}">
+                    <button class="action-btn delete-btn" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Contact Modal -->
+    <div id="addContactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Add New Contact</h1>
+                <span class="close-btn" onclick="closeModal('addContactModal')">&times;</span>
+            </div>
+            <form th:action="@{/create-contact}" method="post">
+                <div class="form-group">
+                    <label for="addName">Name</label>
+                    <input type="text" id="addName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="addEmail">Email</label>
+                    <input type="email" id="addEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="addPhone">Phone Number</label>
+                    <input type="tel" id="addPhone" name="phone" required maxlength="11">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="submit-btn">Add Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update Contact Modal -->
+    <div id="updateContactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Update Contact</h1>
+                <span class="close-btn" onclick="closeModal('updateContactModal')">&times;</span>
+            </div>
+            <form th:action="@{/update-contact}" method="post">
+                <input type="hidden" name="resourceName" id="updateResourceName">
+                <div class="form-group">
+                    <label for="updateName">Name</label>
+                    <input type="text" id="updateName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateEmail">Email</label>
+                    <input type="email" id="updateEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="updatePhone">Phone Number</label>
+                    <input type="tel" id="updatePhone" name="phone" maxlength="11" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="submit-btn">Update Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(modalId){
+        document.getElementById(modalId).style.display = "flex"
+    }
+    function closeModal(modalId){
+        document.getElementById(modalId).style.display = "none"
+    }
+    function updateModal(resourceName, name, email, phone){
+        console.log("this function is called")
+        console.log(resourceName, name, email, phone)
+        document.getElementById('updateResourceName').value = resourceName
+        document.getElementById('updateName').value = name
+        document.getElementById('updateEmail').value = email
+        document.getElementById('updatePhone').value = phone
+        openModal('updateContactModal')
+    }
+</script>
+</body>
+</html>

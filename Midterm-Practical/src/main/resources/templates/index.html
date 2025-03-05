@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: white;
+            border: 2px solid #4285F4;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .login-btn:hover {
+            background-color: #f1f3f4;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-btn p {
+            color: #4285F4;
+            font-size: 16px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .login-btn::before {
+            content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><path fill="%234285F4" d="M34.74 24.27c0-1.15-.1-2.25-.29-3.3H24v6.23h8.92c-.38 2-1.54 3.7-3.28 4.84v4.04h5.32c3.11-2.87 4.91-7.1 4.91-12.12z"/><path fill="%2334A853" d="M24 35c4.43 0 8.15-1.47 10.87-3.97l-5.32-4.04c-1.47 1.01-3.35 1.61-5.55 1.61-4.27 0-7.88-2.88-9.17-6.75H9.34v4.17C12.04 31.54 17.62 35 24 35z"/><path fill="%23FBBC05" d="M14.83 24.25c0-1.38.38-2.68 1.04-3.8v-4.17H9.34c-1.92 3.4-3.01 7.34-3.01 11.72 0 4.38 1.09 8.32 3.01 11.72l6.53-5.06c-.66-1.12-1.04-2.42-1.04-3.8z"/><path fill="%23EA4335" d="M24 13.5c2.41 0 4.59.83 6.3 2.46l4.73-4.73C32.15 8.7 28.43 7 24 7 17.62 7 12.04 10.46 9.34 15.98l6.53 5.06c1.29-3.87 4.9-6.75 9.17-6.75z"/></svg>');
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+    <title>Login to Contacts</title>
+</head>
+<body>
+<div class="login-container">
+    <h1>Login to Contacts</h1>
+    <form class="login-form" th:action="@{/oauth2/authorization/google}" method="get">
+        <button class="login-btn" type="submit">
+            <p>Login with Google</p>
+        </button>
+    </form>
+</div>
+</body>
+</html>
